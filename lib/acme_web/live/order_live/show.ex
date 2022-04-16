@@ -1,6 +1,8 @@
 defmodule AcmeWeb.OrderLive.Show do
   use AcmeWeb, :live_view
 
+  require OpenTelemetry.Tracer
+
   alias Acme.Orders
 
   @impl true
@@ -20,7 +22,14 @@ defmodule AcmeWeb.OrderLive.Show do
 
   @impl true
   def handle_info({:order_updated, order}, socket) do
-    {:noreply, assign(socket, :order, order)}
+    opts = %{attributes: %{user: inspect(self())}}
+
+    OpenTelemetry.Tracer.with_span "order_live.show:order_updated", opts do
+      # expensive operation like DB call, service call.. etc.
+      Process.sleep(70)
+
+      {:noreply, assign(socket, :order, order)}
+    end
   end
 
   defp page_title(:show), do: "Show Order"
