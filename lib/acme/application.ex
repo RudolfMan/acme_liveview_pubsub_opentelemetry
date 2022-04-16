@@ -7,6 +7,9 @@ defmodule Acme.Application do
 
   @impl true
   def start(_type, _args) do
+    OpentelemetryPhoenix.setup()
+    OpentelemetryEcto.setup([:acme, :repo])
+
     children = [
       # Start the Ecto repository
       Acme.Repo,

@@ -46,7 +46,12 @@ defmodule Acme.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:opentelemetry, "~> 1.0"},
+      {:opentelemetry_api, "~> 1.0"},
+      {:opentelemetry_zipkin, "~> 1.0"},
+      {:opentelemetry_phoenix, "~> 1.0"},
+      {:opentelemetry_ecto, "~> 1.0"}
     ]
   end
 
