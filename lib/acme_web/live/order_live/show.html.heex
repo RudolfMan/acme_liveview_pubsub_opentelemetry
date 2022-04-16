@@ -1,0 +1,31 @@
+<h1>Show Order</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.order_show_path(@socket, :show, @order)}>
+    <.live_component
+      module={AcmeWeb.OrderLive.FormComponent}
+      id={@order.id}
+      title={@page_title}
+      action={@live_action}
+      order={@order}
+      return_to={Routes.order_show_path(@socket, :show, @order)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Account:</strong>
+    <%= @order.account_id %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @order.status %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.order_show_path(@socket, :edit, @order), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.order_index_path(@socket, :index) %></span>
