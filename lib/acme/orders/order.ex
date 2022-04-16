@@ -4,7 +4,7 @@ defmodule Acme.Orders.Order do
 
   schema "orders" do
     field :account_id, :integer
-    field :status, :integer
+    field :status, Ecto.Enum, values: [placed: 1, shipped: 2, delivered: 3]
 
     timestamps()
   end

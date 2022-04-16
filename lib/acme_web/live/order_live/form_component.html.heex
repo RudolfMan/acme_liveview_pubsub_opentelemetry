@@ -14,7 +14,7 @@
     <%= error_tag f, :account_id %>
 
     <%= label f, :status %>
-    <%= number_input f, :status %>
+    <%= select f, :status, Ecto.Enum.values(Orders.Order, :status), prompt: "Order status" %>
     <%= error_tag f, :status %>
 
     <div>
