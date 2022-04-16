@@ -68,9 +68,12 @@ defmodule Acme.Orders do
 
   """
   def update_order(%Order{} = order, attrs) do
-    order
-    |> Order.changeset(attrs)
-    |> Repo.update()
+    order_changeset = Order.changeset(order, attrs)
+
+    with {:ok, order} <- Repo.update(order_changeset) do
+      Phoenix.PubSub.broadcast(Acme.PubSub, "orders:#{order.id}", {:order_updated, order})
+      {:ok, order}
+    end
   end
 
   @doc """
