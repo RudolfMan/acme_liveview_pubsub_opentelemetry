@@ -21,7 +21,9 @@ defmodule AcmeWeb.OrderLive.Show do
   end
 
   @impl true
-  def handle_info({:order_updated, order}, socket) do
+  def handle_info({:order_updated, order, ctx}, socket) do
+    OpenTelemetry.Tracer.set_current_span(ctx)
+
     opts = %{attributes: %{user: inspect(self())}}
 
     OpenTelemetry.Tracer.with_span "order_live.show:order_updated", opts do

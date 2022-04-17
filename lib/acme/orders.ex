@@ -3,6 +3,8 @@ defmodule Acme.Orders do
   The Orders context.
   """
 
+  require OpenTelemetry.Tracer
+
   import Ecto.Query, warn: false
   alias Acme.Repo
 
@@ -68,11 +70,15 @@ defmodule Acme.Orders do
 
   """
   def update_order(%Order{} = order, attrs) do
-    order_changeset = Order.changeset(order, attrs)
+    OpenTelemetry.Tracer.with_span "orders:update_order" do
+      order_changeset = Order.changeset(order, attrs)
 
-    with {:ok, order} <- Repo.update(order_changeset) do
-      Phoenix.PubSub.broadcast(Acme.PubSub, "orders:#{order.id}", {:order_updated, order})
-      {:ok, order}
+      with {:ok, order} <- Repo.update(order_changeset) do
+        ctx = OpenTelemetry.Tracer.current_span_ctx()
+        Phoenix.PubSub.broadcast(Acme.PubSub, "orders:#{order.id}", {:order_updated, order, ctx})
+
+        {:ok, order}
+      end
     end
   end
 
