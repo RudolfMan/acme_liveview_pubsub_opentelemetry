@@ -1,5 +1,6 @@
 defmodule AcmeWeb.OrderLive.Show do
   use AcmeWeb, :live_view
+  use Acme.PubSub
 
   require OpenTelemetry.Tracer
 
@@ -21,17 +22,12 @@ defmodule AcmeWeb.OrderLive.Show do
   end
 
   @impl true
-  def handle_info({:order_updated, order, ctx}, socket) do
-    OpenTelemetry.Tracer.set_current_span(ctx)
+  def handle_info({:order_updated, order}, socket) do
+    # expensive operation like DB call, service call.. etc.
+    # for the example we'll do a function call that results in DB query
+    order = Orders.get_order!(order.id)
 
-    opts = %{attributes: %{user: inspect(self())}}
-
-    OpenTelemetry.Tracer.with_span "order_live.show:order_updated", opts do
-      # expensive operation like DB call, service call.. etc.
-      Process.sleep(70)
-
-      {:noreply, assign(socket, :order, order)}
-    end
+    {:noreply, assign(socket, :order, order)}
   end
 
   defp page_title(:show), do: "Show Order"
