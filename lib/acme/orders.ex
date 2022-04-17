@@ -3,6 +3,8 @@ defmodule Acme.Orders do
   The Orders context.
   """
 
+  require Acme.PubSub
+
   import Ecto.Query, warn: false
   alias Acme.Repo
 
